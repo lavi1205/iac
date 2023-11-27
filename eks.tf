@@ -200,29 +200,17 @@ resource "aws_eks_addon" "ebs-csi-driver" {
   depends_on = [ aws_iam_role.eks_cluster_irsa_ebs_csi_driver, aws_eks_node_group.example ]
 }
 
-# resource "null_resource" "provision" {
-
-#   provisioner "local-exec" {
-#     command = "../script/k8s-alb.sh"
-#     interpreter=["/bin/bash", "-c"]
-
-#     environment = {
-#       IRSA_ALB = "${aws_iam_role.eks_cluster_irsa_aws-load-balancer-controller.arn}"
-#     }
-#   }
-# }
-
-
-
 resource "null_resource" "provision" {
 
-provisioner "local-exec" {
-  command = templatefile("../script/k8s-alb.sh",
-  {
-    TAINT_KEY   = "${var.taint_key}"
-    TAINT_VALUE = "${var.taint_value}"
-  })
-  interpreter=["/bin/bash", "-c"]
-  working_dir=path.module
+  provisioner "local-exec" {
+    command = "../script/k8s-alb.sh"
+    interpreter=["/bin/bash", "-c"]
+
+    environment = {
+      IRSA_ALB = "${aws_iam_role.eks_cluster_irsa_aws-load-balancer-controller.arn}"
+      TAINT_KEY   = "${var.taint_key}"
+      TAINT_VALUE = "${var.taint_value}" 
+    }
   }
+  depends_on = [  ]
 }
