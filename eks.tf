@@ -212,5 +212,5 @@ resource "null_resource" "provision" {
       TAINT_VALUE = "${var.taint_value}" 
     }
   }
-  depends_on = [  ]
+  depends_on = [aws_eks_cluster.eks_cluster,aws_eks_node_group.example ]
 }
